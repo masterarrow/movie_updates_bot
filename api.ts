@@ -59,7 +59,7 @@ export class API {
       let choice: MovieI = result.data.results[rand.index];
       // Check required parameters
       while (!choice.id || !choice.poster_path || !choice.title || !choice.overview) {
-        choice = result.data.results[API.getRand(11).index];
+        choice = result.data.results[API.getRand(1).index];
       }
 
       const movieDetails = await axios.get(this.baseUrl + `${choice.id}?api_key=${this.key}&language=en-US`);
