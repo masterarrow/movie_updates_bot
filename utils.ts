@@ -6,20 +6,22 @@ export const welcomeMsg = 'Welcome to <b>Movie Releases Bot</b>\n\n' +
 
 export const errorResponse = "Sorry, now we can't find a good movie for you 😞\nPlease try again later 😊";
 
+/* Main menu buttons */
 export enum keys {
   UPCOMING = 'Upcoming Movie',
   TOP_RATED = 'Top Rated Movie',
   POPULAR = 'Popular Movie'
 }
 
-export function getMainMenu(): any {
-  return Markup.keyboard([ [keys.UPCOMING, keys.TOP_RATED], [keys.POPULAR] ]).resize().extra();
-}
+/* Get main menu buttons */
+export const getMainMenu = (): any =>
+  Markup.keyboard([ [keys.UPCOMING, keys.TOP_RATED], [keys.POPULAR] ]).resize().extra();
 
-export function getCommandsMenu(): any {
-  return Markup.keyboard([ ['/start', '/help', '/quit'] ]).resize().extra();
-}
+/* Get available commands */
+export const getCommandsMenu = (): any =>
+  Markup.keyboard([ ['/start', '/help', '/quit'] ]).resize().extra();
 
+/* Formatted response in markdown format */
 export function markdownResponse(data: MovieI): string {
   const genres = 'genres' in data ? data.genres.slice(0, 3).map(item => item.name) : [];
 

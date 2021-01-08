@@ -3,6 +3,7 @@ import axios from 'axios';
 // https://www.themoviedb.org/settings/api
 // https://developers.themoviedb.org/3/movies/
 
+/* Movie fields extracted from the themoviedb.org */
 export interface MovieI {
   id: number,
   title: string,
@@ -21,6 +22,7 @@ export interface MovieI {
   vote_count: number | undefined
 }
 
+/* API for handling all requests to the themoviedb.org */
 export class API {
   private readonly key: string;
   private readonly upcoming: string;
@@ -36,20 +38,26 @@ export class API {
     this.popular = this.baseUrl + `popular?api_key=${this.key}&language=en-US&page=`;
   }
 
+  /* Get random page number and movie index  */
   private static getRand(totalPages: number): { page: number, index: number } {
-    const page = Math.floor(Math.random() * totalPages) +1; // 1-11
+    const page = Math.floor(Math.random() * totalPages) +1;
     const index = Math.floor(Math.random() * 18) +1; // 20 movies per page
 
     return { page, index };
   }
 
+  /* Get movie data */
   private async getMovieData(link: string): Promise<MovieI | boolean> {
     try {
-      const rand = API.getRand(11);
-      const result = await axios.get(link);
-
+      // Get total pages count from first page
+      const res = await axios.get(link + 1);
+      // Generate random page number and movie index in the array
+      const rand = API.getRand(res.data.total_pages);
+      // Get selected page with movies
+      const result = await axios.get(link + rand.page);
+      // Get movie
       let choice: MovieI = result.data.results[rand.index];
-
+      // Check required parameters
       while (!choice.id || !choice.poster_path || !choice.title || !choice.overview) {
         choice = result.data.results[API.getRand(11).index];
       }
@@ -60,19 +68,10 @@ export class API {
       return false;
     }
   }
-
-  async getUpcoming(): Promise<MovieI | boolean> {
-    const rand = API.getRand(11);
-    return this.getMovieData(this.upcoming + rand.page);
-  }
-
-  async getTopRated(): Promise<MovieI | boolean> {
-    const rand = API.getRand(412);
-    return this.getMovieData(this.rated + rand.page);
-  }
-
-  async getPopular(): Promise<MovieI | boolean> {
-    const rand = API.getRand(500);
-    return this.getMovieData(this.popular + rand.page);
-  }
+  /* Get upcoming movies */
+  getUpcoming = async (): Promise<MovieI | boolean> => this.getMovieData(this.upcoming);
+  /* Get top rated movies */
+  getTopRated = async (): Promise<MovieI | boolean> => this.getMovieData(this.rated);
+  /* Get popular movies */
+  getPopular = async  (): Promise<MovieI | boolean> => this.getMovieData(this.popular);
 }

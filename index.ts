@@ -40,10 +40,10 @@ bot.on('text', async ctx => {
 bot.command('quit', (ctx) => ctx.leaveChat());
 
 if (process.env.SERVER) {
-  // Set telegram webhook
+  // Set telegram web hook
   bot.telegram.setWebhook(process.env.SERVER);
 
-  // Http webhook, for nginx/heroku users.
+  // Http web hook
   bot.startWebhook('/secret-path', null, 5000)
 } else {
   bot.launch().then(() => console.info('Bot started...'));
