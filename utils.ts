@@ -1,10 +1,10 @@
 import Markup from 'telegraf/markup.js'
-import { MovieI } from "./api";
+import { MovieI } from './api';
 
 export const welcomeMsg = 'Welcome to <b>Movie Releases Bot</b>\n\n' +
   'Please choose the desirable category to get a movie';
 
-export const errorResponse = "Sorry, now we can't find a good movie for you 😞\nPlease try again later 😊";
+export const errorResponse = 'Sorry, now we can\'t find a good movie for you 😞\nPlease try again later 😊';
 
 /* Main menu buttons */
 export enum keys {

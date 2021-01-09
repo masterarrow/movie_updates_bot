@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 import { Telegraf } from 'telegraf';
-import { TelegrafContext } from "telegraf/typings/context";
+import { TelegrafContext } from 'telegraf/typings/context';
 import { markdownResponse, getCommandsMenu, getMainMenu, welcomeMsg, errorResponse, keys } from './utils';
 import { API, MovieI } from './api';
 
