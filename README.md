@@ -11,4 +11,5 @@ Telegram bot on Node.js and telegraf.js
 #### Usage
 
 1. Start in development mode `yarn start dev`.
-2. Start in production mode `yarn run start`. Need to se a `SERVER` - url addres of your server.
+2. Build app `yarn run build`.
+3. Start in production mode `yarn run start`. Need to add a `SERVER` - url address of your server.
