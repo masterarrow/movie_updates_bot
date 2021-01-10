@@ -52,7 +52,7 @@ if (process.env.SERVER) {
   bot.telegram.setWebhook(process.env.SERVER);
 
   // Http web hook
-  bot.startWebhook('/secret-path', null, 5000)
+  bot.startWebhook('/', null, parseInt(process.env.PORT || '3000', 10));
 } else {
   bot.launch().then(() => console.info('Bot started...'));
 }
