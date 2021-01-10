@@ -23,23 +23,17 @@ export const getCommandsMenu = (): any =>
 
 /* Formatted response in markdown format */
 export function markdownResponse(data: MovieI): string {
-  const genres = 'genres' in data ? data.genres.slice(0, 3).map(item => item.name) : [];
-
-  const languages = 'spoken_languages' in data
-    ? data.spoken_languages.slice(0, 3).map(item => item.english_name): [];
-
-  const companies = 'production_companies' in data
-    ? data.production_companies.slice(0, 3).map(item => item.name) : [];
-
-  const countries = 'production_countries' in data
-    ? data.production_countries.slice(0, 3).map(item => item.name) : [];
+  const genres = data?.genres.splice(0, 3).map(item => item.name) || [];
+  const languages = data?.spoken_languages.slice(0, 3).map(item => item.english_name) || [];
+  const companies = data?.production_companies.slice(0, 3).map(item => item.name) || [];
+  const countries = data?.production_countries.slice(0, 3).map(item => item.name) || [];
 
   let result = `🎬  [${data.title}](https://image.tmdb.org/t/p/w300${data.poster_path})\n\n`;
 
-  if ('runtime' in data && data.runtime !== 0) result += `🕐 _${data.runtime} min_\t\t\t\t`;
-  if ('release_date' in data && data.release_date) result += `📅 ${data.release_date}\n\n`;
+  if (data?.runtime !== 0) result += `🕐 _${data.runtime} min_\t\t\t\t`;
+  if (data?.release_date) result += `📅 ${data.release_date}\n\n`;
 
-  if ('tagline' in data) result += `_${data.tagline}_\n\n`;
+  if (data?.tagline) result += `_${data.tagline}_\n\n`;
   if (genres.length) result += `✅ *${genres.join(', ')}*\n\n`;
   if (languages.length) result += `🔈 ${languages.join(', ')}\n\n`;
   if (companies.length) result += `🎞 _${companies.join(', ')}_\n\n`;
