@@ -35,7 +35,7 @@ export function markdownResponse(data: MovieI): string {
 
   let result = `🎬  [${data.title}](https://image.tmdb.org/t/p/w300${data.poster_path})\n\n`;
 
-  if (data?.runtime !== 0) result += `🕐 _${data.runtime} min_\t\t\t\t`;
+  if ('runtime' in data && data.runtime !== 0) result += `🕐 _${data.runtime} min_\t\t\t\t`;
   if (data?.release_date) result += `📅 ${data.release_date}\n\n`;
 
   if (data?.tagline) result += `_${data.tagline}_\n\n`;
