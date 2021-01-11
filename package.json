@@ -5,6 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "dev": "nodemon index.ts",
+    "development": "tsc -p . && tsc -w | node dist/index.js",
     "lint": "eslint ./*.ts --fix",
     "build": "tsc -p .",
     "start": "node dist/index.js"
