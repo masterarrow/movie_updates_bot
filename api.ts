@@ -5,21 +5,21 @@ import axios from 'axios';
 
 /* Movie fields extracted from the themoviedb.org */
 export interface MovieI {
-  id: number,
-  title: string,
-  overview: string
-  genres: [ { name: string } ] | undefined,
-  poster_path: string,
-  production_companies: [ { logo_path: string, name: string } ] | undefined,
-  production_countries: [ { name: string } ] | undefined,
-  release_date: string | undefined,
-  revenue: number | undefined,
-  runtime: number | undefined,
-  spoken_languages: [ { english_name: string, name: string } ] | undefined,
-  tagline: string | undefined,
-  video: boolean,
-  vote_average: number | undefined,
-  vote_count: number | undefined
+  id: number;
+  title: string;
+  overview: string;
+  genres: [{ name: string }] | undefined;
+  poster_path: string;
+  production_companies: [{ logo_path: string; name: string }] | undefined;
+  production_countries: [{ name: string }] | undefined;
+  release_date: string | undefined;
+  revenue: number | undefined;
+  runtime: number | undefined;
+  spoken_languages: [{ english_name: string; name: string }] | undefined;
+  tagline: string | undefined;
+  video: boolean;
+  vote_average: number | undefined;
+  vote_count: number | undefined;
 }
 
 /* API for handling all requests to the themoviedb.org */
@@ -39,9 +39,9 @@ export class API {
   }
 
   /* Get random page number and movie index  */
-  private static getRand(totalPages: number): { page: number, index: number } {
-    const page = Math.floor(Math.random() * totalPages) +1;
-    const index = Math.floor(Math.random() * 18) +1; // 20 movies per page
+  private static getRand(totalPages: number): { page: number; index: number } {
+    const page = Math.floor(Math.random() * totalPages) + 1;
+    const index = Math.floor(Math.random() * 18) + 1; // 20 movies per page
 
     return { page, index };
   }
@@ -62,7 +62,9 @@ export class API {
         choice = result.data.results[API.getRand(1).index];
       }
 
-      const movieDetails = await axios.get(this.baseUrl + `${choice.id}?api_key=${this.key}&language=en-US`);
+      const movieDetails = await axios.get(
+        this.baseUrl + `${choice.id}?api_key=${this.key}&language=en-US`
+      );
       return movieDetails.data;
     } catch (_) {
       return false;
@@ -73,5 +75,5 @@ export class API {
   /* Get top rated movies */
   getTopRated = async (): Promise<MovieI | boolean> => this.getMovieData(this.rated);
   /* Get popular movies */
-  getPopular = async  (): Promise<MovieI | boolean> => this.getMovieData(this.popular);
+  getPopular = async (): Promise<MovieI | boolean> => this.getMovieData(this.popular);
 }

@@ -1,10 +1,11 @@
-import Markup from 'telegraf/markup.js'
+import Markup from 'telegraf/markup.js';
 import { MovieI } from './api';
 
-export const welcomeMsg = 'Welcome to <b>Movie Releases Bot</b>\n\n' +
-  'Please choose the desirable category to get a movie';
+export const welcomeMsg =
+  'Welcome to <b>Movie Releases Bot</b>\n\n' + 'Please choose the desirable category to get a movie';
 
-export const errorResponse = 'Sorry, now we can\'t find a good movie for you 😞\nPlease try again later 😊';
+export const errorResponse =
+  "Sorry, now we can't find a good movie for you 😞\nPlease try again later 😊";
 
 /* Main menu buttons */
 export enum keys {
@@ -15,11 +16,15 @@ export enum keys {
 
 /* Get main menu buttons */
 export const getMainMenu = (): any =>
-  Markup.keyboard([ [keys.UPCOMING, keys.TOP_RATED], [keys.POPULAR] ]).resize().extra();
+  Markup.keyboard([[keys.UPCOMING, keys.TOP_RATED], [keys.POPULAR]])
+    .resize()
+    .extra();
 
 /* Get available commands */
 export const getCommandsMenu = (): any =>
-  Markup.keyboard([ ['/start', '/help', '/quit'] ]).resize().extra();
+  Markup.keyboard([['/start', '/help', '/quit']])
+    .resize()
+    .extra();
 
 /* Formatted response in markdown format */
 export function markdownResponse(data: MovieI): string {
