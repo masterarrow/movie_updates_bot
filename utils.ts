@@ -28,10 +28,13 @@ export const getCommandsMenu = (): any =>
 
 /* Formatted response in markdown format */
 export function markdownResponse(data: MovieI): string {
-  const genres = data?.genres.splice(0, 3).map(item => item.name) || [];
-  const languages = data?.spoken_languages.slice(0, 3).map(item => item.english_name) || [];
-  const companies = data?.production_companies.slice(0, 3).map(item => item.name) || [];
-  const countries = data?.production_countries.slice(0, 3).map(item => item.name) || [];
+  const genres = 'genres' in data ? data.genres.splice(0, 3).map(item => item.name) : [];
+  const languages =
+    'spoken_languages' in data ? data.spoken_languages.slice(0, 3).map(item => item.english_name) : [];
+  const companies =
+    'production_companies' in data ? data.production_companies.slice(0, 3).map(item => item.name) : [];
+  const countries =
+    'production_countries' in data ? data.production_countries.slice(0, 3).map(item => item.name) : [];
 
   let result = `🎬  [${data.title}](https://image.tmdb.org/t/p/w300${data.poster_path})\n\n`;
 
