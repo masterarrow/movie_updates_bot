@@ -2,7 +2,7 @@
   "name": "themoviedb_updates_bot",
   "version": "1.0.0",
   "description": "telegram bot",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "scripts": {
     "dev": "tsc -p . && tsc -w | node dist/index.js",
     "lint": "eslint ./*.ts --fix",

@@ -36,9 +36,12 @@ export function markdownResponse(data: MovieI): string {
   const countries =
     'production_countries' in data ? data.production_countries.slice(0, 3).map(item => item.name) : [];
 
-  let result = `🎬  [${data.title}](https://image.tmdb.org/t/p/w300${data.poster_path})\n\n`;
+  const poster = data.poster_path ? `https://image.tmdb.org/t/p/w300${data.poster_path}` : null;
 
-  if ('runtime' in data && data.runtime !== 0) result += `🕐 _${data.runtime} min_\t\t\t\t`;
+  let result = poster ? `🎬  [${data.title}](${poster})\n\n` : `🎬  ${data.title}\n\n`;
+
+  if (data.runtime && data.runtime !== 0) result += `🕐 _${data.runtime} min_\t\t\t\t`;
+
   if (data?.release_date) result += `📅 ${data.release_date}\n\n`;
 
   if (data?.tagline) result += `_${data.tagline}_\n\n`;
@@ -47,7 +50,9 @@ export function markdownResponse(data: MovieI): string {
   if (companies.length) result += `🎞 _${companies.join(', ')}_\n\n`;
   if (countries.length) result += `🏳️ *${countries.join(', ')}*\n\n`;
 
-  result += `${data.overview}`;
+  result += `${data.overview}\n\n`;
+
+  if ('trailer' in data) result += `🎬 Trailer: [${data.trailer.name}](${data.trailer.link})`;
 
   return result;
 }

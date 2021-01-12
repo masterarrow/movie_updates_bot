@@ -42,10 +42,25 @@ bot.hears(keys.UPCOMING, async ctx => response(ctx, await api.getUpcoming()));
 bot.hears(keys.TOP_RATED, async ctx => response(ctx, await api.getTopRated()));
 bot.hears(keys.POPULAR, async ctx => response(ctx, await api.getPopular()));
 
+/* Display response in markdown format */
+async function search(ctx: TelegrafContext): Promise<void> {
+  try {
+    if (ctx.message.text.includes('/search')) {
+      const query = ctx.message.text.replace('/search', '');
+      const data = await api.search(query);
+      return response(ctx, data);
+    }
+  } catch (_) {}
+}
+
 bot.on('text', async ctx => {
+  if (ctx.message.text.includes('/search')) {
+    /* Search for the movie by its title */
+    return search(ctx);
+  }
   /* Response on any input except registered */
   await ctx.replyWithHTML(
-    `Unknown command please choose one of the next` + `<i>${ctx.message.text}</i>`,
+    'Unknown command. Please type `/search "movie title"` to find a certain movie or choose one of the next commands',
     getCommandsMenu()
   );
 });
