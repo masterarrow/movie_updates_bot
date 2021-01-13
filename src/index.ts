@@ -30,7 +30,7 @@ async function response(ctx: TelegrafContext, movie: MovieI | null, defaultKeybo
       // Show default keyboard after sending a message with movie
       ctx
         .replyWithMarkdown(markdownResponse(movie), keyboard)
-        .then(async () => await ctx.replyWithHTML('🙇‍♂', getMainMenu()));
+        .then(async () => await ctx.replyWithHTML('Movie by your request 🎬', getMainMenu()));
     } else {
       await ctx.replyWithMarkdown(markdownResponse(movie), keyboard);
     }
