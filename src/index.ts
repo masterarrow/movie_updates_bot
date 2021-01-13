@@ -1,14 +1,7 @@
 import * as dotenv from 'dotenv';
-import { Telegraf } from 'telegraf';
+import { Markup, Telegraf } from 'telegraf';
 import { TelegrafContext } from 'telegraf/typings/context';
-import {
-  markdownResponse,
-  getCommandsMenu,
-  getMainMenu,
-  welcomeMsg,
-  errorResponse,
-  keys
-} from './utils';
+import { markdownResponse, getCommandsMenu, getMainMenu, welcomeMsg, errorResponse, keys } from './utils';
 import { API, MovieI } from './api';
 
 dotenv.config();
@@ -18,13 +11,29 @@ dotenv.config();
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const api = new API(process.env.TMDB_KEY);
 
+// To store a list of found movies
+let movies: MovieI[];
+
 /* Display response in markdown format */
-async function response(ctx: TelegrafContext, movie: MovieI | boolean): Promise<void> {
+async function response(ctx: TelegrafContext, movie: MovieI | null, defaultKeyboard = false): Promise<void> {
   try {
     if (!movie) {
       await ctx.reply(errorResponse);
     }
-    await ctx.replyWithMarkdown(markdownResponse(movie as MovieI));
+    // Add button to follow a trailer link
+    let keyboard;
+    if (movie.trailer) {
+      keyboard = Markup.inlineKeyboard([Markup.urlButton('Show trailer', movie.trailer?.link)]).extra();
+    }
+
+    if (defaultKeyboard) {
+      // Show default keyboard after sending a message with movie
+      ctx
+        .replyWithMarkdown(markdownResponse(movie), keyboard)
+        .then(async () => await ctx.replyWithHTML('🙇‍♂', getMainMenu()));
+    } else {
+      await ctx.replyWithMarkdown(markdownResponse(movie), keyboard);
+    }
   } catch (_) {}
 }
 
@@ -45,16 +54,28 @@ bot.hears(keys.POPULAR, async ctx => response(ctx, await api.getPopular()));
 /* Display response in markdown format */
 async function search(ctx: TelegrafContext): Promise<void> {
   try {
-    if (ctx.message.text.includes('/search')) {
-      const query = ctx.message.text.replace('/search', '');
-      const data = await api.search(query);
-      return response(ctx, data);
+    if (ctx.message.text) {
+      const query = ctx.message.text.trim();
+      movies = await api.search(query);
+      // Buttons with movie's names
+      const buttons = Markup.keyboard(movies.map(item => `${item.title} (${item.release_date})`))
+        .resize()
+        .extra();
+
+      await ctx.replyWithHTML('Please choose one of the movies to see the details:', buttons);
     }
   } catch (_) {}
 }
 
 bot.on('text', async ctx => {
-  if (ctx.message.text.includes('/search')) {
+  if (movies) {
+    // Display information about movie selected in the search results
+    const movie = movies.find(item => item.title === ctx.message.text.split('(')[0].trim());
+    if (movie) {
+      return response(ctx, movie, true);
+    }
+  }
+  if (ctx.message.text && ctx.message.text.match(/[\w\s]/g)) {
     /* Search for the movie by its title */
     return search(ctx);
   }

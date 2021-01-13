@@ -4,8 +4,7 @@ import { MovieI } from './api';
 export const welcomeMsg =
   'Welcome to <b>Movie Releases Bot</b>\n\n' + 'Please choose the desirable category to get a movie';
 
-export const errorResponse =
-  "Sorry, now we can't find a good movie for you 😞\nPlease try again later 😊";
+export const errorResponse = "Sorry, now we can't find a good movie for you 😞\nPlease try again later 😊";
 
 /* Main menu buttons */
 export enum keys {
@@ -26,15 +25,12 @@ export const getCommandsMenu = (): any =>
     .resize()
     .extra();
 
-/* Formatted response in markdown format */
+/* Response in markdown format */
 export function markdownResponse(data: MovieI): string {
   const genres = 'genres' in data ? data.genres.splice(0, 3).map(item => item.name) : [];
-  const languages =
-    'spoken_languages' in data ? data.spoken_languages.slice(0, 3).map(item => item.english_name) : [];
-  const companies =
-    'production_companies' in data ? data.production_companies.slice(0, 3).map(item => item.name) : [];
-  const countries =
-    'production_countries' in data ? data.production_countries.slice(0, 3).map(item => item.name) : [];
+  const languages = 'spoken_languages' in data ? data.spoken_languages.slice(0, 3).map(item => item.english_name) : [];
+  const companies = 'production_companies' in data ? data.production_companies.slice(0, 3).map(item => item.name) : [];
+  const countries = 'production_countries' in data ? data.production_countries.slice(0, 3).map(item => item.name) : [];
 
   const poster = data.poster_path ? `https://image.tmdb.org/t/p/w300${data.poster_path}` : null;
 
@@ -51,8 +47,6 @@ export function markdownResponse(data: MovieI): string {
   if (countries.length) result += `🏳️ *${countries.join(', ')}*\n\n`;
 
   result += `${data.overview}\n\n`;
-
-  if ('trailer' in data) result += `🎬 Trailer: [${data.trailer.name}](${data.trailer.link})`;
 
   return result;
 }

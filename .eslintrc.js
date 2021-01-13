@@ -26,5 +26,8 @@ module.exports = {
         'operator-linebreak': 'off',
         'default-param-last': 'error',
         'camelcase': 'off',
+        'prettier/prettier': [ 'error', {
+            "printWidth": 120,
+        }]
     },
 };

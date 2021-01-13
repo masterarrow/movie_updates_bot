@@ -56,7 +56,7 @@ export class API {
   }
 
   /* Get movie data */
-  private async getMovie(link: string): Promise<MovieI | boolean> {
+  private async getMovie(link: string): Promise<MovieI | null> {
     try {
       // Get total pages count from first page
       const res = await axios.get(link + 1);
@@ -74,7 +74,7 @@ export class API {
 
       return this.getMovieById(choice.id);
     } catch (_) {
-      return false;
+      return null;
     }
   }
 
@@ -100,8 +100,7 @@ export class API {
       );
 
       if (videos.length) {
-        const video =
-          videos.length > 1 ? videos[Math.floor(Math.random() * videos.length) + 1] : videos[0];
+        const video = videos.length > 1 ? videos[Math.floor(Math.random() * videos.length) + 1] : videos[0];
 
         // Save trailer data
         const link =
@@ -117,38 +116,25 @@ export class API {
     return movieDetails.data;
   };
 
-  /* Search for a movie */
-  search = async (query: string): Promise<MovieI | boolean> => {
+  /* Search for a movie by title */
+  search = async (query: string): Promise<MovieI[] | null> => {
     try {
       const result = await axios.get(this.query + query);
       // Movie not found
       if (!result.data.results.length) {
-        return false;
+        return null;
       }
-      // Select a random movie in the list
-      const movieCount: number = result.data.results.length;
-      const index: number = movieCount > 1 ? Math.floor(Math.random() * movieCount) + 1 : 0;
-
-      // Get movie
-      let choice: MovieI = result.data.results[index];
-      if (movieCount > 1) {
-        // Check required parameters
-        while (!choice.id || !choice.title || !choice.overview) {
-          choice = result.data.results[API.getRand(1).index];
-        }
-      }
-
-      // TODO: return full list instead of one
-      return this.getMovieById(choice.id);
+      // Filter movies
+      return result.data.results.filter(item => 'id' in item && 'title' in item && 'overview' in item);
     } catch (_) {
-      return false;
+      return null;
     }
   };
 
   /* Get upcoming movies */
-  getUpcoming = async (): Promise<MovieI | boolean> => this.getMovie(this.upcoming);
+  getUpcoming = async (): Promise<MovieI | null> => this.getMovie(this.upcoming);
   /* Get top rated movies */
-  getTopRated = async (): Promise<MovieI | boolean> => this.getMovie(this.rated);
+  getTopRated = async (): Promise<MovieI | null> => this.getMovie(this.rated);
   /* Get popular movies */
-  getPopular = async (): Promise<MovieI | boolean> => this.getMovie(this.popular);
+  getPopular = async (): Promise<MovieI | null> => this.getMovie(this.popular);
 }
