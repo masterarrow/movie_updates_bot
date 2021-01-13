@@ -89,26 +89,27 @@ export class API {
     );
 
     /* Select a random video trailer from the list */
-    let videos: VideoI[] = movieDetails.data.videos?.results;
+    const videos: VideoI[] = movieDetails.data.videos?.results.filter(
+      item =>
+        'key' in item &&
+        'name' in item &&
+        'site' in item &&
+        item.site &&
+        (item.site.toUpperCase() === 'YOUTUBE' || item.site.toUpperCase() === 'VIMEO')
+    );
     if (videos) {
-      videos = videos.filter(
-        item =>
-          'key' in item &&
-          'name' in item &&
-          'site' in item &&
-          (item.site.toUpperCase() === 'YOUTUBE' || item.site.toUpperCase() === 'VIMEO')
-      );
-
       if (videos.length) {
         const video = videos.length > 1 ? videos[Math.floor(Math.random() * videos.length) + 1] : videos[0];
 
-        // Save trailer data
-        const link =
-          video.site.toUpperCase() === 'YOUTUBE'
-            ? `https://www.youtube.com/watch?v=${video.key}`
-            : `https://vimeo.com/${video.key}`;
+        if ('site' in video && video.site) {
+          // Save trailer data
+          const link =
+            video.site.toUpperCase() === 'YOUTUBE'
+              ? `https://www.youtube.com/watch?v=${video.key}`
+              : `https://vimeo.com/${video.key}`;
 
-        movieDetails.data.trailer = { link, name: video.name.replace('[', '').replace(']', '') };
+          movieDetails.data.trailer = { link, name: video.name.replace('[', '').replace(']', '') };
+        }
       }
       // Delete other trailers
       delete movieDetails.data.videos;

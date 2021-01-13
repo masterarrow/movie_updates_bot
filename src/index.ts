@@ -81,7 +81,7 @@ bot.on('text', async ctx => {
   }
   /* Response on any input except registered */
   await ctx.replyWithHTML(
-    'Unknown command. Please type `/search "movie title"` to find a certain movie or choose one of the next commands',
+    'Unknown command. Please type `movie title` to find a certain movie or choose one of the next commands:',
     getCommandsMenu()
   );
 });
