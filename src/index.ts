@@ -64,6 +64,7 @@ async function search(ctx: TelegrafContext): Promise<void> {
   } catch (_) {}
 }
 
+/* Process user text input */
 bot.on('text', async ctx => {
   if (movies) {
     // Display information about movie selected in the search results
@@ -71,6 +72,8 @@ bot.on('text', async ctx => {
     if (movie) {
       // Get full information
       const movieDetails = await api.getMovieById(movie.id);
+      // Clear the list
+      movies = [];
       return response(ctx, movieDetails, true);
     }
   }
@@ -85,7 +88,7 @@ bot.on('text', async ctx => {
   );
 });
 
-// Leave the chat
+/* Leave the chat */
 bot.command('quit', ctx => ctx.leaveChat());
 
 if (process.env.SERVER) {

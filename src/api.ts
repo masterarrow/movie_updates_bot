@@ -31,15 +31,23 @@ interface VideoI {
 
 /* API for handling all requests to the themoviedb.org */
 export class API {
+  /* API key */
   private readonly key: string;
+  /* URL to get a list of upcoming movies */
   private readonly upcoming: string;
+  /* URL to get the top rated movies on TMDb */
   private readonly rated: string;
+  /* URL to get a list of the current popular movies on TMDb. Daily updates */
   private readonly popular: string;
+  /* Base url for API requests to TMDb */
   private readonly baseUrl: string;
+  /* URL to search for movies by title */
   private readonly query: string;
 
   constructor(apiKey: string, baseUrl?: string) {
-    this.key = apiKey;
+    // Clear apiKey and baseUrl
+    this.key = apiKey.trim();
+    baseUrl = baseUrl.trim()[baseUrl.length - 1] === '/' ? baseUrl.trim().slice(0, baseUrl.length - 2) : baseUrl.trim();
     this.baseUrl = baseUrl || 'https://api.themoviedb.org/3';
     this.upcoming = this.baseUrl + `/movie/upcoming?api_key=${this.key}&language=en-US&page=`;
     this.rated = this.baseUrl + `/movie/top_rated?api_key=${this.key}&language=en-US&page=`;
@@ -47,7 +55,7 @@ export class API {
     this.query = this.baseUrl + `/search/movie?api_key=${this.key}&language=en-US&query=`;
   }
 
-  /* Get random page number and movie index  */
+  /* Get random page number and movie index */
   private static getRand(totalPages: number): { page: number; index: number } {
     const page = Math.floor(Math.random() * totalPages) + 1;
     const index = Math.floor(Math.random() * 18) + 1; // 20 movies per page
@@ -55,7 +63,7 @@ export class API {
     return { page, index };
   }
 
-  /* Get movie data */
+  /* Get movie main data */
   private async getMovie(link: string): Promise<MovieI | null> {
     try {
       // Get total pages count from first page
@@ -125,7 +133,7 @@ export class API {
     }
   };
 
-  /* Search for a movies by title */
+  /* Search for movies by title */
   search = async (query: string, includeAdult = false): Promise<MovieI[] | null> => {
     try {
       const result = await axios.get(this.query + query + `&include_adult=${includeAdult}`);
@@ -140,10 +148,10 @@ export class API {
     }
   };
 
-  /* Get upcoming movies */
+  /* Get a random upcoming movie */
   getUpcoming = async (): Promise<MovieI | null> => this.getMovie(this.upcoming);
-  /* Get top rated movies */
+  /* Get a random top rated movie */
   getTopRated = async (): Promise<MovieI | null> => this.getMovie(this.rated);
-  /* Get popular movies */
+  /* Get a random popular movie */
   getPopular = async (): Promise<MovieI | null> => this.getMovie(this.popular);
 }
