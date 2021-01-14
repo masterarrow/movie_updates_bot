@@ -1,4 +1,5 @@
-# movie_updates_bot
+# Movie Releases
+(movie_updates_bot)
 
 Telegram bot on Node.js and Telegraf.js
 
