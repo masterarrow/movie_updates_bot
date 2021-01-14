@@ -18,4 +18,4 @@ In terminal run the next commands:
 
 `$ git push heroku master`
 
-Setup environment variables (see [README.md](https://github.com/masterarrow/movie_updates_bot/README.md) )
+Setup environment variables (see [README.md](https://github.com/masterarrow/movie_updates_bot/blob/master/README.md) )
