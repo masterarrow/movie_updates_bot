@@ -1,3 +1,4 @@
+import express from 'express';
 import * as dotenv from 'dotenv';
 import { Markup, Telegraf } from 'telegraf';
 import { TelegrafContext } from 'telegraf/typings/context';
@@ -10,6 +11,27 @@ dotenv.config();
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const api = new API(process.env.TMDB_KEY);
+
+if (process.env.SERVER) {
+  // Init express app to listen on port (PORT will be provided by Heroku)
+  const PORT = process.env.PORT || 3000;
+  const app = express();
+  // Set telegram web hook
+  bot.telegram.setWebhook(`${process.env.SERVER}/bot${process.env.BOT_TOKEN}`);
+
+  // Http web hook
+  app.use(bot.webhookCallback(`/bot${process.env.BOT_TOKEN}`));
+
+  // Start server on port
+  app.get('/', (_, res) => {
+    res.send('Hello World!');
+  });
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+} else {
+  bot.launch().then(() => console.info('Bot started...'));
+}
 
 // To store a list of found movies
 let movies: MovieI[];
@@ -90,16 +112,6 @@ bot.on('text', async ctx => {
 
 /* Leave the chat */
 bot.command('quit', ctx => ctx.leaveChat());
-
-if (process.env.SERVER) {
-  // Set telegram web hook
-  bot.telegram.setWebhook(process.env.SERVER);
-
-  // Http web hook
-  bot.startWebhook('/', null, 5000);
-} else {
-  bot.launch().then(() => console.info('Bot started...'));
-}
 
 // Enable graceful stop
 process.once('SIGINT', () => bot.stop());
