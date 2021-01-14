@@ -32,9 +32,7 @@ export function markdownResponse(data: MovieI): string {
   const companies = 'production_companies' in data ? data.production_companies.slice(0, 3).map(item => item.name) : [];
   const countries = 'production_countries' in data ? data.production_countries.slice(0, 3).map(item => item.name) : [];
 
-  const poster = data.poster_path ? `https://image.tmdb.org/t/p/w300${data.poster_path}` : null;
-
-  let result = poster ? `🎬  [${data.title}](${poster})\n\n` : `🎬  ${data.title}\n\n`;
+  let result = data.poster_path ? `🎬  [${data.title}](${data.poster_path})\n\n` : `🎬  ${data.title}\n\n`;
 
   if (data.runtime && data.runtime !== 0) result += `🕐 _${data.runtime} min_\t\t\t\t`;
 

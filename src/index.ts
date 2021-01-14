@@ -26,14 +26,10 @@ async function response(ctx: TelegrafContext, movie: MovieI | null, defaultKeybo
       keyboard = Markup.inlineKeyboard([Markup.urlButton('Show trailer', movie.trailer?.link)]).extra();
     }
 
-    if (defaultKeyboard) {
+    ctx.replyWithMarkdown(markdownResponse(movie), keyboard).then(async () => {
       // Show default keyboard after sending a message with movie
-      ctx
-        .replyWithMarkdown(markdownResponse(movie), keyboard)
-        .then(async () => await ctx.replyWithHTML('Movie by your request 🎬', getMainMenu()));
-    } else {
-      await ctx.replyWithMarkdown(markdownResponse(movie), keyboard);
-    }
+      if (defaultKeyboard) await ctx.replyWithHTML('Movie by your request 🎬', getMainMenu());
+    });
   } catch (_) {}
 }
 
@@ -51,14 +47,15 @@ bot.hears(keys.UPCOMING, async ctx => response(ctx, await api.getUpcoming()));
 bot.hears(keys.TOP_RATED, async ctx => response(ctx, await api.getTopRated()));
 bot.hears(keys.POPULAR, async ctx => response(ctx, await api.getPopular()));
 
-/* Display response in markdown format */
+/* Search for the movies by title */
 async function search(ctx: TelegrafContext): Promise<void> {
   try {
     if (ctx.message.text) {
-      const query = ctx.message.text.trim();
-      movies = await api.search(query);
-      // Buttons with movie's names
-      const buttons = Markup.keyboard(movies.map(item => `${item.title} (${item.release_date})`))
+      movies = await api.search(ctx.message.text.trim(), true);
+      // Buttons with movie's titles
+      const buttons = Markup.keyboard(
+        movies.map(item => (item.release_date ? `${item.title} (${item.release_date})` : `${item.title}`))
+      )
         .resize()
         .extra();
 
@@ -72,7 +69,9 @@ bot.on('text', async ctx => {
     // Display information about movie selected in the search results
     const movie = movies.find(item => item.title === ctx.message.text.split('(')[0].trim());
     if (movie) {
-      return response(ctx, movie, true);
+      // Get full information
+      const movieDetails = await api.getMovieById(movie.id);
+      return response(ctx, movieDetails, true);
     }
   }
   if (ctx.message.text && ctx.message.text.match(/[\w\s]/g)) {

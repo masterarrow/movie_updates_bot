@@ -40,11 +40,11 @@ export class API {
 
   constructor(apiKey: string, baseUrl?: string) {
     this.key = apiKey;
-    this.baseUrl = baseUrl || 'https://api.themoviedb.org/3/';
-    this.upcoming = this.baseUrl + `movie/upcoming?api_key=${this.key}&language=en-US&page=`;
-    this.rated = this.baseUrl + `movie/top_rated?api_key=${this.key}&language=en-US&page=`;
-    this.popular = this.baseUrl + `movie/popular?api_key=${this.key}&language=en-US&page=`;
-    this.query = this.baseUrl + `search/movie?api_key=${this.key}&query=`;
+    this.baseUrl = baseUrl || 'https://api.themoviedb.org/3';
+    this.upcoming = this.baseUrl + `/movie/upcoming?api_key=${this.key}&language=en-US&page=`;
+    this.rated = this.baseUrl + `/movie/top_rated?api_key=${this.key}&language=en-US&page=`;
+    this.popular = this.baseUrl + `/movie/popular?api_key=${this.key}&language=en-US&page=`;
+    this.query = this.baseUrl + `/search/movie?api_key=${this.key}&language=en-US&query=`;
   }
 
   /* Get random page number and movie index  */
@@ -69,7 +69,7 @@ export class API {
       let choice: MovieI = result.data.results[rand.index];
       // Check required parameters
       while (!choice.id || !choice.poster_path || !choice.title || !choice.overview) {
-        choice = result.data.results[API.getRand(1).index];
+        choice = result.data.results[Math.floor(Math.random() * 18) + 1];
       }
 
       return this.getMovieById(choice.id);
@@ -78,27 +78,28 @@ export class API {
     }
   }
 
-  /* Get movie details */
+  /* Get movie details with trailers */
   getMovieById = async (movieId: number): Promise<MovieI | null> => {
-    if (!movieId) {
-      return null;
-    }
+    try {
+      if (!movieId) {
+        return null;
+      }
 
-    const movieDetails = await axios.get(
-      this.baseUrl + `movie/${movieId}?api_key=${this.key}&language=en-US&append_to_response=videos`
-    );
+      const movieDetails = await axios.get(
+        this.baseUrl + `/movie/${movieId}?api_key=${this.key}&language=en-US&append_to_response=videos`
+      );
 
-    /* Select a random video trailer from the list */
-    const videos: VideoI[] = movieDetails.data.videos?.results.filter(
-      item =>
-        'key' in item &&
-        'name' in item &&
-        'site' in item &&
-        item.site &&
-        (item.site.toUpperCase() === 'YOUTUBE' || item.site.toUpperCase() === 'VIMEO')
-    );
-    if (videos) {
-      if (videos.length) {
+      /* Filter video trailers */
+      const videos: VideoI[] = movieDetails.data.videos?.results.filter(
+        item =>
+          'key' in item &&
+          'name' in item &&
+          'site' in item &&
+          item.site &&
+          (item.site.toUpperCase() === 'YOUTUBE' || item.site.toUpperCase() === 'VIMEO')
+      );
+      /* Select a random video trailer from the list */
+      if (videos && videos.length) {
         const video = videos.length > 1 ? videos[Math.floor(Math.random() * videos.length) + 1] : videos[0];
 
         if ('site' in video && video.site) {
@@ -112,15 +113,22 @@ export class API {
         }
       }
       // Delete other trailers
-      delete movieDetails.data.videos;
+      delete movieDetails.data?.videos;
+      // Movie poster
+      movieDetails.data.poster_path = movieDetails.data.poster_path
+        ? `https://image.tmdb.org/t/p/w300${movieDetails.data.poster_path}`
+        : null;
+
+      return movieDetails.data;
+    } catch (_) {
+      return null;
     }
-    return movieDetails.data;
   };
 
-  /* Search for a movie by title */
-  search = async (query: string): Promise<MovieI[] | null> => {
+  /* Search for a movies by title */
+  search = async (query: string, includeAdult = false): Promise<MovieI[] | null> => {
     try {
-      const result = await axios.get(this.query + query);
+      const result = await axios.get(this.query + query + `&include_adult=${includeAdult}`);
       // Movie not found
       if (!result.data.results.length) {
         return null;
