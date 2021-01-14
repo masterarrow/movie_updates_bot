@@ -1,6 +1,6 @@
 # movie_updates_bot
 
-Telegram bot on Node.js and telegraf.js
+Telegram bot on Node.js and Telegraf.js
 
 #### Setup
 
