@@ -47,7 +47,10 @@ export class API {
   constructor(apiKey: string, baseUrl?: string) {
     // Clear apiKey and baseUrl
     this.key = apiKey.trim();
-    baseUrl = baseUrl.trim()[baseUrl.length - 1] === '/' ? baseUrl.trim().slice(0, baseUrl.length - 2) : baseUrl.trim();
+    if (baseUrl) {
+      baseUrl =
+        baseUrl.trim()[baseUrl.length - 1] === '/' ? baseUrl.trim().slice(0, baseUrl.length - 2) : baseUrl.trim();
+    }
     this.baseUrl = baseUrl || 'https://api.themoviedb.org/3';
     this.upcoming = this.baseUrl + `/movie/upcoming?api_key=${this.key}&language=en-US&page=`;
     this.rated = this.baseUrl + `/movie/top_rated?api_key=${this.key}&language=en-US&page=`;
