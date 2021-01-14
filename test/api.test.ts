@@ -1,50 +1,34 @@
 import * as dotenv from 'dotenv';
-import { API } from '../src/api';
+import { API, MovieI } from '../src/api';
 
 dotenv.config();
 
 describe('Test TMDb API module', () => {
   const api = new API(process.env.TMDB_KEY);
 
+  function testExpectancy(movie: MovieI) {
+    expect(movie).toBeDefined();
+    expect(movie.id).toBeGreaterThanOrEqual(0);
+    expect(movie.title.length).toBeGreaterThan(0);
+    expect(movie.overview.length).toBeGreaterThan(0);
+  }
+
   test('Test get a random popular movie', async () => {
     const movie = await api.getPopular();
 
-    if (movie) {
-      expect(movie).toBeDefined();
-      expect(movie.id).toBeGreaterThanOrEqual(0);
-      expect(movie.title.length).toBeGreaterThan(0);
-      expect(movie.overview.length).toBeGreaterThan(0);
-    }
+    testExpectancy(movie);
   });
 
   test('Test get a random upcoming movie', async () => {
     const movie = await api.getUpcoming();
 
-    if (movie) {
-      expect(movie).toBeDefined();
-      expect(movie.id).toBeGreaterThanOrEqual(0);
-      expect(movie.title.length).toBeGreaterThan(0);
-      expect(movie.overview.length).toBeGreaterThan(0);
-
-      // if (movie.release_date) {
-      //   // Release date must be in this year or next
-      //   const movieYear = new Date(movie.release_date).getFullYear();
-      //   const currentYear = new Date().getFullYear();
-      //
-      //   expect(movieYear).toBeGreaterThanOrEqual(currentYear);
-      // }
-    }
+    testExpectancy(movie);
   });
 
   test('Test get a random top rated movie', async () => {
     const movie = await api.getTopRated();
 
-    if (movie) {
-      expect(movie).toBeDefined();
-      expect(movie.id).toBeGreaterThanOrEqual(0);
-      expect(movie.title.length).toBeGreaterThan(0);
-      expect(movie.overview.length).toBeGreaterThan(0);
-    }
+    testExpectancy(movie);
   });
 
   test('Test to search movies by title', async () => {
