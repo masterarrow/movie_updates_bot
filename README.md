@@ -20,3 +20,5 @@ Run `yarn install`.
 1. Start in development mode `yarn start dev`.
 2. Build the app `yarn run build`.
 3. Start in production mode `yarn run start`.
+
+For information about deployment on Heroku see [HEROKU DEPLOY.md](/HEROKU DEPLOY.md).
