@@ -15,9 +15,10 @@ const api = new API(process.env.TMDB_KEY);
 if (process.env.SERVER) {
   // Init express app to listen on port (PORT will be provided by Heroku)
   const PORT = process.env.PORT || 3000;
+  const SERVER = process.env.SERVER || 'https://heroku-app.herokuapp.com';
   const app = express();
   // Set telegram web hook
-  bot.telegram.setWebhook(`${process.env.SERVER}/bot${process.env.BOT_TOKEN}`);
+  bot.telegram.setWebhook(`${SERVER}/bot${process.env.BOT_TOKEN}`);
 
   // Http web hook
   app.use(bot.webhookCallback(`/bot${process.env.BOT_TOKEN}`));
