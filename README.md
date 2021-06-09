@@ -11,7 +11,7 @@ Set environment variables:
 
 `TMDB_KEY` - You can get it from [The Movie Database](https://www.themoviedb.org).
 
-`SERVER` - Url address of your server (default setup for [Heroku](www.heroku.com)).
+`SERVER` - Url address of your server (default setup for [Heroku](https://www.heroku.com)).
 Set it up if you deploying on a server (will work on the localhost without it).
 
 Run `yarn install`.
